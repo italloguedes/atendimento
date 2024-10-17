@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('atendimentos', function (Blueprint $table) {
-            $table->id(); // Isso cria uma coluna id auto-incrementada
+            $table->id();
             $table->text('nome')->notNullable();
             $table->text('cpf')->notNullable();
+            $table->string('email')->notNullable(); // Verifique se o campo email está definido como notNullable
             $table->date('dia_atual')->notNullable();
             $table->time('horario')->notNullable();
             $table->text('solicitante')->notNullable();
