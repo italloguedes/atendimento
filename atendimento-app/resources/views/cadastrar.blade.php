@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastrar Atendimento</title>
-    <!-- Fonte Google -->
+    <title>Cadastrar Atendimento e CIN</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
         body {
@@ -50,13 +49,19 @@
         button:hover {
             background-color: #45a049;
         }
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
+        .success-message, .error-message {
             padding: 10px;
             margin-bottom: 15px;
             border-radius: 5px;
             text-align: center;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
         }
     </style>
 </head>
@@ -68,12 +73,27 @@
             <p class="success-message">{{ session('success') }}</p>
         @endif
 
+        @if (session('error'))
+            <p class="error-message">{{ session('error') }}</p>
+        @endif
+
+        <!-- Formulário de Cadastro de Atendimento -->
         <form action="/cadastrar" method="POST">
             @csrf
             <input type="text" name="nome" placeholder="Nome" required>
             <input type="text" name="cpf" placeholder="CPF" required>
+            <input type="email" name="email" placeholder="Email" required>
             <input type="text" name="solicitante" placeholder="Solicitante" required>
-            <button type="submit">Cadastrar</button>
+            <button type="submit">Cadastrar Atendimento</button>
+        </form></br>
+
+        <!-- Formulário de Cadastro de CIN -->
+        <h1>Cadastrar CIN</h1>
+        <form action="/cadastrar-cin" method="POST">
+            @csrf
+            <input type="text" name="cpf" placeholder="CPF da CIN" required>
+            <input type="text" name="nome" placeholder="Nome" required>
+            <button type="submit">Cadastrar CIN</button>
         </form>
     </div>
 </body>
