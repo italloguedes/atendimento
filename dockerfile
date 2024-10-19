@@ -1,32 +1,17 @@
-# Use a imagem base oficial do PHP 8.2
+# Use uma imagem base adequada
 FROM php:8.2-fpm
 
 # Instale as dependências do sistema
-RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev unzip git nginx
+RUN apt-get update && apt-get install -y nginx
 
-# Instale as extensões do PHP necessárias
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd
+# Copie a configuração do Nginx
+COPY ./nginx.config /etc/nginx/conf.d/default.conf
 
-    # Defina o diretório de trabalho
-    WORKDIR /var/www
+# Copie o código da aplicação para o diretório apropriado
+COPY . /var/www
 
-    # Copie o conteúdo do seu projeto para o contêiner
-    COPY . .
+# Exponha a porta 80
+EXPOSE 80
 
-    # Instale as dependências do Composer
-    RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-        && composer install --no-interaction --optimize-autoloader
-
-        # Copie o arquivo de configuração do Nginx
-        COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-        # Verifique a configuração do Nginx
-        RUN nginx -t
-
-        # Exponha a porta 80
-        EXPOSE 80
-
-        # Execute o Nginx e o PHP-FPM
-        CMD ["sh", "-c", "service nginx start && tail -f /var/log/nginx/error.log & php-fpm"]
-        
+# Inicie o Nginx e PHP-FPM
+CMD service nginx start && php-fpm
