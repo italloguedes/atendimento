@@ -2,7 +2,7 @@
 FROM php:8.2-fpm
 
 # Instale as dependências do sistema
-RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev unzip git
+RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev unzip git nginx
 
 # Instale as extensões do PHP necessárias
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -18,8 +18,11 @@ COPY . .
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer install --no-interaction --optimize-autoloader
 
-# Exponha a porta 9000
-EXPOSE 9000
+# Copie o arquivo de configuração do Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Execute o servidor PHP
-CMD ["php-fpm"]
+# Exponha a porta 80
+EXPOSE 80
+
+# Execute o Nginx e o PHP-FPM
+CMD ["sh", "-c", "service nginx start && php-fpm"]
